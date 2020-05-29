@@ -22,17 +22,23 @@ class DetailViewController: UIViewController {
     // gets connected, the UIImageView will point to a real UIImageView, not
     // to nil, so we can start using it.
     @IBOutlet weak var imageView: UIImageView!
-    var selectedImage: String?
+    
+    var numberOfImages: Int?
+    var selectedImageNumber: Int?
+    var selectedImageName: String?
+
     
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        title = selectedImage
+        if let n = selectedImageNumber, let total = numberOfImages {
+            title = "Picture \(n) of \(total)"
+        }
         
         // this is the configuration of the navigation bar only for this screen
         navigationItem.largeTitleDisplayMode = .never
         
-        if let imageToLoad = selectedImage {
+        if let imageToLoad = selectedImageName {
             imageView.image = UIImage(named: imageToLoad)
         }
     }

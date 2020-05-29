@@ -24,6 +24,7 @@ class ViewController: UITableViewController {
         // Get the app's main bundle: by using a bundle object, you can access a bundle's resources without knowing the structure of the bundle.
         // The main bundle object gives you access to the resources that shipped with your app: our compiled program and all our assets
         let path = Bundle.main.resourcePath!
+        // let itemPath = Bundle.main.path(forResource: "nssl", ofType: "jpg")
         let items = try! fileManager.contentsOfDirectory(atPath: path)
         
         // It's perfectly fine to use ! here: if this code fails it means our app can't read its own data so something must be seriously wrong
@@ -33,6 +34,7 @@ class ViewController: UITableViewController {
                 picturesNames.append(item)
             }
         }
+        picturesNames.sort()
     }
     
     // This code will be triggered when iOS wnats to know how many rows are in the TableView at the specified section
@@ -52,7 +54,9 @@ class ViewController: UITableViewController {
         let detailVC = storyboard?.instantiateViewController(identifier: "Detail") as! DetailViewController
         
         // 2: success! Set its selectedImage property
-        detailVC.selectedImage = picturesNames[indexPath.row]
+        detailVC.selectedImageName = picturesNames[indexPath.row]
+        detailVC.numberOfImages = picturesNames.count
+        detailVC.selectedImageNumber = indexPath.row + 1
         
         // 3: now push it onto the navigation controller
         navigationController?.pushViewController(detailVC, animated: true)
