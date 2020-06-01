@@ -15,8 +15,9 @@ class ViewController: UIViewController {
     @IBOutlet weak var button3: UIButton!
     
     var countries = [String]()
-    var correctAnswer = 0
+    var correctAnswerIndex = 0
     var score = 0
+    var questionsAskedCount = 0
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -32,44 +33,56 @@ class ViewController: UIViewController {
         button2.layer.borderColor = UIColor.lightGray.cgColor
         button3.layer.borderColor = UIColor.lightGray.cgColor
         
+        newGame()
+    }
+    
+    func newGame(action: UIAlertAction! = nil) {
+        score = 0
+        questionsAskedCount = 0
         askQuestion()
     }
     
     func askQuestion(action: UIAlertAction! = nil) {
-        countries.shuffle()
-        correctAnswer = Int.random(in: 0...2)
-        
-        button1.setImage(UIImage(named: countries[0]), for: .normal)
-        button2.setImage(UIImage(named: countries[1]), for: .normal)
-        button3.setImage(UIImage(named: countries[2]), for: .normal)
-        
-        title = countries[correctAnswer].uppercased()
+        if (questionsAskedCount < 10) {
+            questionsAskedCount += 1
+            
+            countries.shuffle()
+            correctAnswerIndex = Int.random(in: 0...2)
+            
+            button1.setImage(UIImage(named: countries[0]), for: .normal)
+            button2.setImage(UIImage(named: countries[1]), for: .normal)
+            button3.setImage(UIImage(named: countries[2]), for: .normal)
+            
+            title = "\(countries[correctAnswerIndex].uppercased()) - Score: \(score)"
+        } else {
+            title = "\(countries[correctAnswerIndex].uppercased()) - Final score: \(score)"
+            
+            let finalAC = UIAlertController(
+                title: "Finish!",
+                message: "Your final score is \(score)",
+                preferredStyle: .alert
+            )
+            let continueAction = UIAlertAction(title: "Play Again", style: .default, handler: newGame)
+            finalAC.addAction(continueAction)
+            present(finalAC, animated: true)
+        }
     }
     
     @IBAction func buttonTapped(_ sender: UIButton) {
-        var title: String
-        
-        if sender.tag == correctAnswer {
+        if sender.tag == correctAnswerIndex {
             score += 1
-            title = "Correct"
+            askQuestion()
         } else {
             score -= 1
-            title = "Wrong"
+            let wrongAnswerAC = UIAlertController(
+                title: "Wrong",
+                message: "That's the flag of \(countries[sender.tag].uppercased())",
+                preferredStyle: .alert
+            )
+            let continueAction = UIAlertAction(title: "Continue", style: .default, handler: askQuestion)
+            wrongAnswerAC.addAction(continueAction)
+            present(wrongAnswerAC, animated: true)
         }
-        
-        let alertController = UIAlertController(title: title, message: "Your score is \(score)", preferredStyle: .alert)
-        
-        let continueAction = UIAlertAction(title: "Continue", style: .default, handler: askQuestion)
-        // let middleAction = UIAlertAction(title: "Middle", style: .default)
-        // let cancelAction = UIAlertAction(title: "Cancel", style: .cancel)
-        // let destructiveAction = UIAlertAction(title: "Destructive", style: .destructive)
-        
-        alertController.addAction(continueAction)
-        // alertController.addAction(middleAction)
-        // alertController.addAction(cancelAction)
-        // alertController.addAction(destructiveAction)
-        
-        present(alertController, animated: true)
     }
 }
 
