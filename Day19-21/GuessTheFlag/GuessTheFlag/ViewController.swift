@@ -33,6 +33,8 @@ class ViewController: UIViewController {
         button2.layer.borderColor = UIColor.lightGray.cgColor
         button3.layer.borderColor = UIColor.lightGray.cgColor
         
+        navigationItem.rightBarButtonItem = UIBarButtonItem(image: UIImage(systemName: "info.circle"), style: .done, target: self, action: #selector(showScore))
+        
         newGame()
     }
     
@@ -68,7 +70,7 @@ class ViewController: UIViewController {
         }
     }
     
-    @IBAction func buttonTapped(_ sender: UIButton) {
+    @IBAction func flagButtonTapped(_ sender: UIButton) {
         if sender.tag == correctAnswerIndex {
             score += 1
             askQuestion()
@@ -83,6 +85,18 @@ class ViewController: UIViewController {
             wrongAnswerAC.addAction(continueAction)
             present(wrongAnswerAC, animated: true)
         }
+    }
+    
+    @objc func showScore() {
+        let matchDetailsAC = UIAlertController(
+            title: "Match details",
+            message: "Question n. \(questionsAskedCount) - Score \(score)",
+            preferredStyle: .alert
+        )
+        
+        matchDetailsAC.addAction(UIAlertAction(title: "Got it", style: .cancel))
+        
+        present(matchDetailsAC, animated: true)
     }
 }
 
